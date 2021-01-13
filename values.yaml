@@ -92,3 +92,7 @@ prometheus:
   expose: false
 
 podAnnotations: {}
+
+# default bucket
+minio:
+  defaultBuckets: "mlruns"
