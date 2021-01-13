@@ -1,0 +1,26 @@
+apiVersion: v1
+entries:
+  mlflow:
+  - apiVersion: v2
+    appVersion: 1.13.1
+    created: "2021-01-13T18:40:25.528183064+02:00"
+    dependencies:
+    - alias: minio
+      name: minio
+      repository: https://charts.bitnami.com/bitnami
+      version: 4.1.13
+    - alias: postgresql
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.2.1
+    description: |
+      [MLFlow](https://mlflow.org/) is an open source platform specialized in tracking ML experiments, and packaging and deploying ML models.
+    digest: ab0f19234dac38d2ada5d4bf7adfbe58c15df715c871f7115ce509f79d65984a
+    maintainers:
+    - name: marcusgawronsky@gmail.com
+    name: mlflow
+    type: application
+    urls:
+    - https://marcusinthesky.github.io/helm-mlops/mlflow-1.13.1.tgz
+    version: 1.13.1
+generated: "2021-01-13T18:40:25.521062251+02:00"
