@@ -11,7 +11,7 @@ backendStore:
     secret: postgresql
 
   storage:
-    mflow_s3_endpoint_url: minio.default.svc.cluster.local:9000/minio/
+    mlflow_s3_endpoint_url: http://minio.default.svc.cluster.local:9000
     secret: minio
 
 # defaultArtifactRoot -- A local or remote filepath (e.g. s3://my-bucket). It is mandatory when specifying a database backend store
