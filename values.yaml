@@ -5,14 +5,9 @@ backendStore:
     dialect: postgresql
     driver: psycopg2
     username: postgres
-    host: postgresql.default.svc.cluster.local
     port: 5432
     database: postgres
-    secret: postgresql
 
-  storage:
-    mlflow_s3_endpoint_url: http://minio.default.svc.cluster.local:9000
-    secret: minio
 
 # defaultArtifactRoot -- A local or remote filepath (e.g. s3://my-bucket). It is mandatory when specifying a database backend store
 defaultArtifactRoot: s3://mlruns

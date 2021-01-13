@@ -38,16 +38,16 @@ spec:
           {{- end }}
           env:
             - name: MLFLOW_S3_ENDPOINT_URL
-              value: "http://minio.{{ .Release.Namespace }}.svc.cluster.local:9000"
+              value: "http://{{ .Release.Name }}-minio.{{ .Release.Namespace }}.svc.cluster.local:9000"
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Values.backendStore.storage.secret }}"
+                  name: "{{ .Release.Name }}-minio"
                   key: access-key
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Values.backendStore.storage.secret }}"
+                  name: "{{ .Release.Name }}-minio"
                   key: secret-key
             - name: BACKEND_STORE_URI
               value: "{{ .Values.defaultArtifactRoot }}"
@@ -60,10 +60,10 @@ spec:
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Values.backendStore.database.secret }}"
+                  name: "{{ .Release.Name }}-postgresql"
                   key: postgresql-password
             - name: HOST
-              value: "postgresql.{{ .Release.Namespace }}.svc.cluster.local"
+              value: "{{ .Release.Name }}-postgresql.{{ .Release.Namespace }}.svc.cluster.local"
             - name: PORT
               value: "{{ required "you must specify a port for the database" .Values.backendStore.database.port }}"
             - name: DATABASE
