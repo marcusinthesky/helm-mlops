@@ -1,2 +1,2 @@
-# magnificent-mlops
-A template MLOPS infrastructure for model training and service. 
+# Helm Mlflow Tracking
+A helm mlflow tracking server for postgres and minio. 
