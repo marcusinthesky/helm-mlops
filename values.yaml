@@ -2,7 +2,7 @@
 backendStore:
   # backendStore.database -- A map with the values for (username, password, host, port and database).
   database:
-    dialect: postgresql
+    dialect: postgresql # don't change these these are for future support
     driver: psycopg2
     username: postgres
     port: 5432
