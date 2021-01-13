@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mlflow.fullname" . }}
+  labels:
+    {{- include "mlflow.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "mlflow.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+      labels:
+        {{- include "mlflow.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "mlflow.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+          {{- if .Values.prometheus.expose }}
+            - --expose-prometheus=yes
+          {{- end }}
+          {{- range $key, $value := .Values.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          env:
+            - name: MLFLOW_S3_ENDPOINT_URL
+              value: "{{ .Values.backendStore.storage.mlflow_s3_endpoint_url }}"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.backendStore.storage.secret }}"
+                  key: access-key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.backendStore.storage.secret }}"
+                  key: secret-key
+            - name: BACKEND_STORE_URI
+              value: "{{ .Values.defaultArtifactRoot }}"
+            - name: DIALECT
+              value: "{{ required "you must specify a dialect for the database" .Values.backendStore.database.dialect }}"
+            - name: DRIVER
+              value: "{{ required "you must specify a driver for the database" .Values.backendStore.database.driver }}"
+            - name: USERNAME
+              value: "{{ required "you must specify a username for the database" .Values.backendStore.database.username }}"
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.backendStore.database.secret }}"
+                  key: postgresql-password
+            - name: HOST
+              value: "{{ required "you must specify a host for the database" .Values.backendStore.database.host }}"
+            - name: PORT
+              value: "{{ required "you must specify a port for the database" .Values.backendStore.database.port }}"
+            - name: DATABASE
+              value: "{{ required "you must specify a database name" .Values.backendStore.database.database }}"
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
