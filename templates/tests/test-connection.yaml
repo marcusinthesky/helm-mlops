@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "mlflow.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}']
   restartPolicy: Never
